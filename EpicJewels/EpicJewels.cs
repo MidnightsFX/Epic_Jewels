@@ -25,7 +25,7 @@ namespace EpicJewels
     {
         public const string PluginGUID = "MidnightsFX.EpicJewels";
         public const string PluginName = "EpicJewels";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.0.1";
 
         public static ManualLogSource Log;
 
@@ -53,7 +53,7 @@ namespace EpicJewels
             EJLogger.LogInfo("Let the gems flow.");
             GemEffects.EffectList.AddGemEffects();
             GemResources.AddGems();
-
+            
 
 
             Dictionary<string, BepInEx.BaseUnityPlugin> plugins = BepInExUtils.GetPlugins();
@@ -69,6 +69,7 @@ namespace EpicJewels
             Harmony.PatchAll(assembly);
 
             ValConfig.cfg.SaveOnConfigSet = true;
+            ValConfig.cfg.Save();
         }
 
         public static AssetBundle LoadAssetBundle(string bundleName)

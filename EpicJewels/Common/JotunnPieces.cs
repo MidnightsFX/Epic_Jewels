@@ -54,6 +54,18 @@ namespace EpicJewels.Common {
         static bool PiecesReady = false;
 
         public static void RegisterJotunnPiece(JotunnBuildPiece jbuildpiece) {
+            BuildPieces.Add(jbuildpiece);
+        }
+
+        // Sets up pieces and clears
+        public static void SetupJotunnPieces() {
+            foreach (JotunnBuildPiece piece in BuildPieces.OrderBy(x => x.Prefab).ToList()) {
+                SetupJotunBuildPiece(piece);
+            }
+            BuildPieces.Clear();
+        }
+
+        public static void SetupJotunBuildPiece(JotunnBuildPiece jbuildpiece) {
 
             LoadedGameObjects LGos = new LoadedGameObjects();
 
@@ -84,7 +96,7 @@ namespace EpicJewels.Common {
 
             void ResolveAndApplyScenePrefab() {
                 IEnumerable<GameObject> scene_parents = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == jbuildpiece.Prefab);
-                if (ValConfig.EnableDebugMode.Value) { EJLogger.LogInfo($"Found {jbuildpiece.Prefab} scene parent objects: {scene_parents.Count()}"); }
+                if (ValConfig.EnableDebugMode.Value) { EJLogger.LogDebug($"Found {jbuildpiece.Prefab} scene parent objects: {scene_parents.Count()}"); }
                 GameObject scenePrefab = scene_parents.FirstOrDefault();
                 if (scenePrefab == null) {
                     EJLogger.LogWarning($"Could not find scene prefab '{jbuildpiece.Prefab}' after prefab registration; skipping in-place setup for {jbuildpiece.Name}.");
@@ -116,7 +128,7 @@ namespace EpicJewels.Common {
                 if (!PiecesReady || jbuildpiece.Objs.ScenePrefab == null) { return; }
                 if (sender.GetType() == typeof(ConfigEntry<string>)) {
                     ConfigEntry<string> sendEntry = (ConfigEntry<string>)sender;
-                    if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"Recieved new piece config {sendEntry.Value}"); }
+                    if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"Recieved new piece config {sendEntry.Value}"); }
                     // return if its an invalid change
                     if (PieceRecipeConfigUpdater(jbuildpiece, sendEntry.Value) == false) { return; }
                 }
@@ -170,7 +182,7 @@ namespace EpicJewels.Common {
             // RequiresWorkbench is currently never bound; treat a missing entry as "workbench required".
             bool requiresWorkbench = jbuildpiece.Cfgs.RequiresWorkbench?.Value ?? true;
             if (requiresWorkbench == false || string.IsNullOrEmpty(jbuildpiece.Cfgs.Workbench.Value) || jbuildpiece.Cfgs.Workbench.Value.ToLower() == "none") {
-                EJLogger.LogInfo("Setting required crafting station to none.");
+                EJLogger.LogDebug("Setting required crafting station to none.");
                 jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_craftingStation = null;
                 return;
             }
@@ -181,7 +193,7 @@ namespace EpicJewels.Common {
                 return;
             }
 
-            if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"Setting crafting station to {jbuildpiece.Cfgs.Workbench.Value}."); }
+            if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"Setting crafting station to {jbuildpiece.Cfgs.Workbench.Value}."); }
             jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_craftingStation = craftable_at;
         }
 
@@ -199,17 +211,17 @@ namespace EpicJewels.Common {
         // yet resolvable, so it is safe even if a dependency mod registered its items late.
         private static void ApplyRecipe(JotunnBuildPiece jbuildpiece) {
             List<RequirementConfig> recipe = new List<RequirementConfig>();
-            if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo("Validating and building requirementsConfig"); }
+            if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug("Validating and building requirementsConfig"); }
             foreach (var entry in jbuildpiece.Cfgs.UpdatedCost) {
                 if (PrefabManager.Instance.GetPrefab(entry.prefab) == null) {
-                    if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"{entry.prefab} is not a valid prefab, skipping recipe update."); }
+                    if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"{entry.prefab} is not a valid prefab, skipping recipe update."); }
                     return;
                 }
-                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"Checking entry {entry.prefab} amount:{entry.amount} refund?:{entry.refundable}"); }
+                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"Checking entry {entry.prefab} amount:{entry.amount} refund?:{entry.refundable}"); }
                 recipe.Add(new RequirementConfig { Item = entry.prefab, Amount = entry.amount, Recover = entry.refundable });
             }
             if (jbuildpiece.Cfgs.Enabled.Value) {
-                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo("Updating Piece."); }
+                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug("Updating Piece."); }
                 List<Piece.Requirement> newRequirements = new List<Piece.Requirement>();
                 foreach (var recipe_entry in recipe) {
                     Piece.Requirement piece_req = new Piece.Requirement();
@@ -218,9 +230,9 @@ namespace EpicJewels.Common {
                     piece_req.m_recover = recipe_entry.Recover;
                     newRequirements.Add(piece_req);
                 }
-                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"Fixed mock requirements {newRequirements.Count}."); }
+                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"Fixed mock requirements {newRequirements.Count}."); }
                 jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_resources = newRequirements.ToArray();
-                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogInfo($"New requirements set {jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_resources}."); }
+                if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"New requirements set {jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_resources}."); }
             } else {
                 // Set this piece not craftable
                 jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_enabled = false;
@@ -267,7 +279,7 @@ namespace EpicJewels.Common {
                     }
 
                     if (ValConfig.EnableDebugMode.Value == true) {
-                        EJLogger.LogInfo($"prefab: {recipe_segments[0]} c:{recipe_segments[1]} u:{recipe_segments[2]}");
+                        EJLogger.LogDebug($"prefab: {recipe_segments[0]} c:{recipe_segments[1]} u:{recipe_segments[2]}");
                     }
                     updated_pieceRecipe.Add(new PieceCost() { prefab = recipe_segments[0], amount = Int32.Parse(recipe_segments[1]), refundable = refund_flag_parse });
                 }
@@ -280,7 +292,7 @@ namespace EpicJewels.Common {
                     foreach(var entry in updated_pieceRecipe) {
                         recipe_string += $" {entry.prefab} c:{entry.amount} r:{entry.refundable}";
                     }
-                    EJLogger.LogInfo($"Updated recipe:{recipe_string}");
+                    EJLogger.LogDebug($"Updated recipe:{recipe_string}");
                 }
                 return true;
             } else {

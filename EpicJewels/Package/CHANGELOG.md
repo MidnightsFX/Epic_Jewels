@@ -1,3 +1,11 @@
+ **1.0.1**
+ ---
+ ```
+- Fixes default recipe for lights being too expensive
+- Ensures config is always written to disk for new installs
+- Ordered added crystal lights by type
+ ``` 
+
  **1.0.0**
  ---
  ```

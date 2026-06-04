@@ -60,7 +60,7 @@ namespace EpicJewels
             MinimapManager.OnVanillaMapAvailable += () => {
                 string prefabName = $"Raw_{name.ToLower()}_Gemstone";
                 IEnumerable<GameObject> scene_parents = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == prefabName);
-                EJLogger.LogInfo($"Found {scene_parents.Count()} objects in the scene with the name {prefabName} to apply gem material to.");
+                EJLogger.LogDebug($"Found {scene_parents.Count()} objects in the scene with the name {prefabName} to apply gem material to.");
                 foreach (GameObject obj in scene_parents) {
                     // These gemstones are made up of multiple objects kitbashed together, replace the material of all on this formation.
                     obj.GetComponentsInChildren<MeshRenderer>().ToList().ForEach(renderer => renderer.material = GemDefinitions[name].Material);
@@ -75,6 +75,9 @@ namespace EpicJewels
             AddCrystalLightResources("Garnet");
             AddCrystalLightResources("Opal");
             AddCrystalLightResources("Amethyst");
+
+            // Flush all of the prefabs out and set them up
+            JotunnPiece.SetupJotunnPieces();
         }
 
         internal static void AddCrystalLightResources(string name) {
@@ -86,8 +89,8 @@ namespace EpicJewels
             CrystalBrazierBowl.Workbench = "forge";
             CrystalBrazierBowl.Category = "Crystal Lights";
             CrystalBrazierBowl.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 10, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 4, refundable = true } },
             };
             // Setup the pieces localization keys
             CrystalBrazierBowl.BeforePrefabRegistered = (jbuildpiece) => {
@@ -109,8 +112,8 @@ namespace EpicJewels
             Chandelier.Workbench = "forge";
             Chandelier.Category = "Crystal Lights";
             Chandelier.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 15, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 5, refundable = true } },
             };
             // Setup the pieces localization keys
             Chandelier.BeforePrefabRegistered = (jbuildpiece) => {
@@ -132,8 +135,8 @@ namespace EpicJewels
             HangingBowl.Workbench = "forge";
             HangingBowl.Category = "Crystal Lights";
             HangingBowl.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 5, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 2, refundable = true } },
             };
             // Setup the pieces localization keys
             HangingBowl.BeforePrefabRegistered = (jbuildpiece) => {
@@ -155,8 +158,8 @@ namespace EpicJewels
             LargeWallLight.Workbench = "forge";
             LargeWallLight.Category = "Crystal Lights";
             LargeWallLight.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 10, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 2, refundable = true } },
             };
             // Setup the pieces localization keys
             LargeWallLight.BeforePrefabRegistered = (jbuildpiece) => {
@@ -178,8 +181,8 @@ namespace EpicJewels
             PoleLight.Workbench = "forge";
             PoleLight.Category = "Crystal Lights";
             PoleLight.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 5, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 2, refundable = true } },
             };
             // Setup the pieces localization keys
             PoleLight.BeforePrefabRegistered = (jbuildpiece) => {
@@ -201,8 +204,7 @@ namespace EpicJewels
             RawCrystal.Workbench = "piece_workbench";
             RawCrystal.Category = "Crystal Lights";
             RawCrystal.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 5, refundable = true } },
             };
             // Setup the pieces localization keys
             RawCrystal.BeforePrefabRegistered = (jbuildpiece) => {
@@ -224,8 +226,8 @@ namespace EpicJewels
             SmallWallLight.Workbench = "forge";
             SmallWallLight.Category = "Crystal Lights";
             SmallWallLight.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 3, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 1, refundable = true } },
             };
             // Setup the pieces localization keys
             SmallWallLight.BeforePrefabRegistered = (jbuildpiece) => {
@@ -247,8 +249,8 @@ namespace EpicJewels
             StandingLamp.Workbench = "forge";
             StandingLamp.Category = "Crystal Lights";
             StandingLamp.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 1, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "IronNails", amount = 1, refundable = true } },
             };
             // Setup the pieces localization keys
             StandingLamp.BeforePrefabRegistered = (jbuildpiece) => {
@@ -270,8 +272,8 @@ namespace EpicJewels
             StandingTorch.Workbench = "forge";
             StandingTorch.Category = "Crystal Lights";
             StandingTorch.PieceCost = new List<JotunnPiece.PieceCost>() {
-                { new JotunnPiece.PieceCost() { prefab = $"Advanced_{name.ToLower()}_Socket", amount = 3, refundable = true } },
-                { new JotunnPiece.PieceCost() { prefab = "Iron", amount = 12, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 1, refundable = true } },
+                { new JotunnPiece.PieceCost() { prefab = "Wood", amount = 2, refundable = true } },
             };
             // Setup the pieces localization keys
             StandingTorch.BeforePrefabRegistered = (jbuildpiece) => {
