@@ -1,0 +1,12 @@
+﻿{
+  "name": "EpicJewels",
+  "description": "More Jewels for all your jewelcrafting needs.",
+  "version_number": "1.0.0",
+  "website_url": "https://discord.gg/Dmr9PQTy9m",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2202",
+    "ValheimModding-Jotunn-2.26.1",
+    "ValheimModding-YamlDotNet-16.3.1",
+    "Smoothbrain-Jewelcrafting-1.5.26"
+  ]
+}

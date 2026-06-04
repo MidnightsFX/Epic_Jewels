@@ -1,0 +1,46 @@
+﻿using EpicJewels.EffectHelpers;
+using HarmonyLib;
+using JetBrains.Annotations;
+using Jewelcrafting;
+using Logger = EpicJewels.Common.EJLogger;
+
+namespace EpicJewels.GemEffects
+{
+    public static class WaterFrenzy
+    {
+        [PublicAPI]
+        public struct Config
+        {
+            [AdditivePowerAttribute] public float Power;
+        }
+
+        private static int wetstatus = "Wet".GetStableHashCode();
+
+        [HarmonyPatch(typeof(Character), nameof(Character.Damage))]
+        private class AddBonusSlashDamage
+        {
+            private static void Prefix(HitData hit)
+            {
+                if (hit.GetAttacker() is Player player && player != null)
+                {
+                    bool thisVikingisWet = player.GetSEMan().HaveStatusEffect(wetstatus);
+                    // Logger.LogDebug($"Frenzy checking for wet viking {thisVikingisWet}");
+                    if (thisVikingisWet)
+                    {
+                        float wet_damage_bonus = (player.GetEffectPower<Config>("Water Frenzy").Power + 100) / 100;
+                        // Logger.LogDebug($"WetDogViking Damage multiplier {wet_damage_bonus}");
+                        hit.m_damage.m_blunt *= wet_damage_bonus;
+                        hit.m_damage.m_pierce *= wet_damage_bonus;
+                        hit.m_damage.m_pierce *= wet_damage_bonus;
+                        hit.m_damage.m_fire *= wet_damage_bonus;
+                        hit.m_damage.m_lightning *= wet_damage_bonus;
+                        hit.m_damage.m_frost *= wet_damage_bonus;
+                        hit.m_damage.m_spirit *= wet_damage_bonus;
+                        hit.m_damage.m_poison *= wet_damage_bonus;
+                        hit.m_damage.m_pickaxe *= wet_damage_bonus;
+                    }
+                }
+            }
+        }
+    }
+}

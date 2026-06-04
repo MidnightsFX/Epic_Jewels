@@ -1,0 +1,338 @@
+Add Slash Damage:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: jade
+  power:
+    power: [3, 6, 9]
+    chance: [30, 45, 55]
+Add Chop Damage:
+  slot: tool
+  gem: jade
+  power:
+    power: [6, 9, 12]
+    chance: [30, 45, 55]
+Coin Hoarder:
+  slot: cloak
+  gem: jade
+  power: [1, 2.5, 5]
+Coin Greed:
+  slot: utility
+  gem: jade
+  power:
+    power: [5, 10, 20]
+    chance: [5, 10, 15]
+Slash Resistance:
+  slot: chest
+  gem: jade
+  power: [1, 3, 5]
+Expert Acrobat:
+  slot: legs
+  gem: jade
+  power: [5, 7, 12]
+Expert Daggers:
+  slot: head
+  gem: jade
+  power: [5, 7, 12]
+Staggering Block:
+  slot: shield
+  gem: jade
+  power: [3, 5, 7]
+Toxifier:
+  slot: trinket
+  gem: jade
+  power:
+    power: [1, 2, 3]
+    distance: [5, 7, 10]
+Blunt Resistance:
+  slot: legs
+  gem: amber
+  power: [1, 3, 5]
+Expert Smasher:
+  slot: chest
+  gem: amber
+  power: [5, 7, 12]
+Add Blunt Damage:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: amber
+  power:
+    power: [3, 6, 9]
+    chance: [30, 45, 55]
+Expert Spearmaiden:
+  slot: cloak
+  gem: amber
+  power: [5, 7, 12]
+Block Reduce Stamina:
+  slot: shield
+  gem: amber
+  power: [10, 15, 20]
+Weapon Reduced Stamina:
+  slot: utility
+  gem: amber
+  power: [5, 10, 15]
+Increase Stamina Regen:
+  slot: head
+  gem: amber
+  power: [9, 18, 27]
+Farmer:
+  slot: tool
+  gem: amber
+  power:
+    power: [1, 2, 3]
+    chance: [15, 25, 35]
+    pickup: [1, 2, 3]
+Adrenal Rewire:
+  slot: trinket
+  gem: amber
+  power:
+    power: [3, 6, 9]
+    chance: [10, 15, 20]
+Pierce Resistance:
+  slot: chest
+  gem: aquamarine
+  power: [1, 3, 5]
+Expert Sprinter:
+  slot: head
+  gem: aquamarine
+  power: [5, 7, 12]
+Add Pierce Damage:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: aquamarine
+  power:
+    power: [3, 6, 9]
+    chance: [30, 45, 55]
+Water Swiftness:
+  slot: legs
+  gem: aquamarine
+  power: [1, 3, 5]
+Water Frenzy:
+  slot: utility
+  gem: aquamarine
+  power: [6, 9, 18]
+Freezing Guard:
+  slot: shield
+  gem: aquamarine
+  power:
+    power: [7, 14, 21]
+    chance: [14, 21, 28]
+Wet Worker:
+  slot: tool
+  gem: aquamarine
+  power: [10, 20, 30]
+Water Resistant:
+  slot: cloak
+  gem: aquamarine
+  power: [15, 30, 60]
+Soaked Fury:
+  slot: trinket
+  gem: aquamarine
+  power: [5, 10, 15]
+Fire Resistance:
+  slot: legs
+  gem: garnet
+  power: [1, 3, 5]
+Expert Axemaster:
+  slot: chest
+  gem: garnet
+  power: [5, 7, 12]
+Expert Mage:
+  slot: head
+  gem: garnet
+  power: [5, 7, 12]
+Inferno:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: garnet
+  power:
+    power: [20, 40, 60]
+    chance: [5, 10, 15]
+Add Pickaxe Damage:
+  slot: tool
+  gem: garnet
+  power:
+    power: [6, 9, 12]
+    chance: [30, 45, 55]
+Burning Frenzy:
+  slot: utility
+  gem: garnet
+  power: [6, 9, 18]
+Burning Viking:
+  slot: cloak
+  gem: garnet
+  power: [5, 15, 30]
+Burning Guard:
+  slot: shield
+  gem: garnet
+  power:
+    power: [5, 10, 15]
+    chance: [20, 30, 40]
+Burning Adrenaline:
+  slot: trinket
+  gem: garnet
+  power: [5, 10, 15]
+Add Lightning Damage:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: opal
+  power:
+    power: [6, 9, 12]
+    chance: [30, 45, 55]
+Expert Fisher:
+  slot: head
+  gem: opal
+  power: [5, 7, 12]
+Expert Harvester:
+  slot: tool
+  gem: opal
+  power: [5, 7, 12]
+Expert Polearms:
+  slot: chest
+  gem: opal
+  power: [5, 7, 12]
+Reduce Weight:
+  slot: utility
+  gem: opal
+  power: [2, 4, 6]
+Lightning Resistance:
+  slot: legs
+  gem: opal
+  power: [1, 3, 5]
+Cover of Darkness:
+  slot: cloak
+  gem: opal
+  power:
+    power: [10, 15, 30]
+    chance: [10, 12, 15]
+    Max Count: [2, 4, 6]
+Retribution:
+  slot: shield
+  gem: opal
+  power:
+    power: [30, 45, 55]
+    chance: [15, 25, 35]
+Harvest Adrenaline:
+  slot: trinket
+  gem: opal
+  power:
+    power: [3, 6, 9]
+    chance: [7, 14, 25]
+Add Spirit Damage:
+  slot: ['weapon', 'elementalmagic', 'bow', 'crossbow']
+  gem: amethyst
+  power:
+    power: [9, 12, 18]
+    chance: [30, 45, 55]
+Expert Swordsman:
+  slot: chest
+  gem: amethyst
+  power: [5, 7, 12]
+Increase Stamina:
+  slot: utility
+  gem: amethyst
+  power: [6, 9, 15]
+Increase Eitr:
+  slot: head
+  gem: amethyst
+  power: [6, 9, 15]
+Expert Brawler:
+  slot: legs
+  gem: amethyst
+  power: [5, 7, 12]
+Poison Resistance:
+  slot: cloak
+  gem: amethyst
+  power: [1, 3, 5]
+Eitr Conversion:
+  slot: shield
+  gem: amethyst
+  power:
+    power: [2, 4, 6]
+    chance: [20, 30, 40]
+Eitr Fused:
+  slot: tool
+  gem: amethyst
+  power:
+    power: [10, 20, 30]
+    cost: [2, 4, 6]
+Eitr Feedback:
+  slot: trinket
+  gem: amethyst
+  power:
+    power: [3, 5, 7]
+    chance: [7, 14, 22]
+gems:
+  meadows:
+    aquamarine: 0.1
+    amber: 0.1
+    jade: 0.3
+    amethyst: 0.0
+    opal: 0.0
+  black forest:
+    jade: 0.1
+    garnet: 0.1
+    opal: 0.1
+    amethyst: 0.0
+    amber: 0.0
+  swamp:
+    amber: 0.1
+    garnet: 0.1
+    opal: 0.1
+    jade: 0.0
+    amethyst: 0.1
+    aquamarine: 0.2
+  mountain:
+    aquamarine: 0.3
+    jade: 0.1
+    amethyst: 0.1
+    opal: 0.2
+    amber: 0.0
+  plains:
+    amber: 0.3
+    garnet: 0.2
+    opal: 0.1
+    jade: 0.0
+    amethyst: 0.1
+    aquamarine: 0.0
+  mistlands:
+    aquamarine: 0.2
+    amethyst: 0.3
+    opal: 0.2
+    jade: 0.0
+    amber: 0.0
+  ash lands:
+    amethyst: 0.2
+    garnet: 0.3
+    opal: 0.1
+    jade: 0.0
+    amber: 0.0
+Have opal = amethyst > 3 of each:
+  conditions:
+    - opal > 3
+    - amethyst > 3
+    - opal = amethyst
+  effect:
+    Combat Spirit: 40
+Have at least 7 garnets:
+  conditions:
+    - garnet > 6
+  effect:
+    Intense Fire: 25
+Have 6 amber and 6 jade:
+  conditions:
+    - amber = 6
+    - jade = 6
+  effect:
+    Weapon Master: 15
+Have at least 6 aquamarine:
+  conditions:
+    - aquamarine > 5
+  effect:
+    Slippery When Wet: 35
+Have at least 13 aquamarine:
+  conditions:
+    - aquamarine > 12
+  effect:
+    Waterproof: 1
+Have at least 9 amethyst, 6 opal, and 3 amber:
+  conditions:
+    - amethyst > 8
+    - opal > 5
+    - amber > 2
+  effect:
+    Spellsword: 45
