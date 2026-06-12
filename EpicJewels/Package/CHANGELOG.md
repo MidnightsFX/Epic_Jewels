@@ -1,3 +1,9 @@
+ **1.0.3**
+ ---
+ ```
+- Fixes Weaponmaster not giving bonus skill levels to Bows
+ ``` 
+
  **1.0.2**
  ---
  ```

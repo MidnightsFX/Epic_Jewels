@@ -122,6 +122,7 @@ namespace EpicJewels.EffectHelpers
                         //Logger.LogDebug($"Run skill increase {skill_increase}");
                     }
                     break;
+                case SkillType.Bows:
                 case SkillType.Crossbows:
                     if (player.GetEffectPower<GemEffects.WeaponMaster.Config>("Weapon Master").Power > 0)
                     {
@@ -132,8 +133,6 @@ namespace EpicJewels.EffectHelpers
                 // These empty ones are already provided by base jewelcrafting
                 case SkillType.Blocking:
                 case SkillType.None:
-
-                case SkillType.Bows:
                 case SkillType.Sneak:
                 case SkillType.Swim:
                 case SkillType.Ride:
