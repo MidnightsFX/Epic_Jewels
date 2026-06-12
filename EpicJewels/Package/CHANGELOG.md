@@ -1,3 +1,9 @@
+ **1.0.2**
+ ---
+ ```
+- Fixes missing hit, destruction, placement sfx & vfx for added crystal lights
+ ``` 
+
  **1.0.1**
  ---
  ```

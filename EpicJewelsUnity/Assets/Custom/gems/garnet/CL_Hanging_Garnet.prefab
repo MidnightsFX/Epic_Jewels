@@ -354,7 +354,7 @@ MonoBehaviour:
   m_harvestRadiusMaxLevel: 0
   m_placeEffect:
     m_effectPrefabs:
-    - m_prefab: {fileID: 8976120583108276352, guid: 4874f86e51fd9424f92a99045611cf64,
+    - m_prefab: {fileID: 8000591871689563537, guid: d3ba06318bc5add45b43b910edce142b,
         type: 3}
       m_enabled: 1
       m_variant: -1
@@ -366,7 +366,7 @@ MonoBehaviour:
       m_randomRotation: 0
       m_scale: 0
       m_childTransform: 
-    - m_prefab: {fileID: 2254712831693461317, guid: 845169161cf5ae5438000093f2064cae,
+    - m_prefab: {fileID: 4575108500129942811, guid: d000fd92deebc8c48a7f24f464fe3b63,
         type: 3}
       m_enabled: 1
       m_variant: -1
@@ -444,7 +444,7 @@ MonoBehaviour:
   m_triggerPrivateArea: 1
   m_destroyedEffect:
     m_effectPrefabs:
-    - m_prefab: {fileID: 4560525722049947008, guid: 4df1559ce1ab86a4b8502e80cbab7350,
+    - m_prefab: {fileID: 1570930389190124074, guid: 8387d7a404e5c0e49bfb3e005d107e7c,
         type: 3}
       m_enabled: 1
       m_variant: -1
@@ -456,7 +456,7 @@ MonoBehaviour:
       m_randomRotation: 0
       m_scale: 0
       m_childTransform: 
-    - m_prefab: {fileID: 8437270279226721962, guid: 9d111f6fe60ebca46a1e4c2424ec1fcc,
+    - m_prefab: {fileID: 4575108500129942811, guid: d000fd92deebc8c48a7f24f464fe3b63,
         type: 3}
       m_enabled: 1
       m_variant: -1
@@ -470,7 +470,7 @@ MonoBehaviour:
       m_childTransform: 
   m_hitEffect:
     m_effectPrefabs:
-    - m_prefab: {fileID: 4560525722049947008, guid: 4df1559ce1ab86a4b8502e80cbab7350,
+    - m_prefab: {fileID: 4288954263320236250, guid: 79b33ef7ffabcab4d88a4ead19cf394a,
         type: 3}
       m_enabled: 1
       m_variant: -1
