@@ -1,3 +1,27 @@
+ **1.0.7**
+ ---
+ ```
+- Fixes Eitr conversion adrenaline gain for weapons that use zero eitr
+ ``` 
+
+ **1.0.6**
+ ---
+ ```
+- Add explicit localization for all of the shattered gem variants
+ ``` 
+
+ **1.0.5**
+ ---
+ ```
+- Fix networked delay duplication
+ ``` 
+
+ **1.0.4**
+ ---
+ ```
+- Fix shader rendering on Vulcan
+ ``` 
+
  **1.0.3**
  ---
  ```

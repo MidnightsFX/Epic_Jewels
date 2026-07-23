@@ -44,33 +44,38 @@ namespace EpicJewels.GemEffects
         };
 
         [HarmonyPatch(typeof(Pickable), nameof(Pickable.Interact))]
-        public static class IncreaseCarryWeight
-        {
-            
-            public static void Postfix(ref bool __result, Humanoid character, Pickable __instance)
-            {
-                if (__result == false)
-                {
-                    // No picking happening
+        public static class IncreaseCarryWeight {
+            // Capture whether the pickable was already picked BEFORE Interact runs.
+            // Interact routes RPC_Pick to the ZDO owner; it only resolves synchronously
+            // (flipping m_picked) when the LOCAL player owns the ZDO. For a non-owner the
+            // pick is async, so without this guard the bonus below duplicates on every call
+            // (e.g. via the 0.5s auto-pickup loop) while the bush still reads as pickable.
+            public static void Prefix(Pickable __instance, out bool __state) {
+                __state = __instance.GetPicked();
+            }
+
+            public static void Postfix(bool __result, Humanoid character, Pickable __instance, bool __state) {
+                // Only reward a genuine unpicked -> picked transition caused by THIS interaction.
+                // __result == false : pickable had no interact animation (unchanged from original behaviour).
+                // __state           : it was already picked before this call, so no reward.
+                // !GetPicked()       : the pick did not resolve locally (we are not the ZDO owner) -> no reward.
+                if (__result == false || __state || __instance.GetPicked() == false) {
+                    // No local picking happened
                     return;
                 }
                 // Being picked by the current player
-                if( character != null && character is Player player && player.GetEffectPower<Config>("Farmer").Power > 0) 
-                {
-                    string prefabname = __instance.m_itemPrefab.name.Replace("(Clone)","").Replace("Pickable_","");
-                    if (UnallowedGreenThumbPickables.Contains(prefabname))
-                    {
-                        // Logger.LogDebug($"Pickable type ({prefabname}) is not allowed for farmer perk.");
+                if (character != null && character is Player player && player.GetEffectPower<Config>("Farmer").Power > 0) {
+                    string prefabname = __instance.m_itemPrefab.name.Replace("(Clone)", "").Replace("Pickable_", "");
+                    if (UnallowedGreenThumbPickables.Contains(prefabname)) {
+                        // EpicJewels.EJLog.LogDebug($"Pickable type ({prefabname}) is not allowed for farmer perk.");
                         return;
                     }
                     float roll = UnityEngine.Random.value;
                     float chance_max = (player.GetEffectPower<Config>("Farmer").Chance / 100);
-                    // Logger.LogDebug($"Farmer chance roll: {roll} < {chance_max}");
-                    if (roll < chance_max)
-                    {
+                    // EpicJewels.EJLog.LogDebug($"Farmer chance roll: {roll} < {chance_max}");
+                    if (roll < chance_max) {
                         int offset = 0;
-                        for (int i = 0; i < player.GetEffectPower<Config>("Farmer").Power; i++)
-                        {
+                        for (int i = 0; i < player.GetEffectPower<Config>("Farmer").Power; i++) {
                             __instance.Drop(__instance.m_itemPrefab, offset++, 1);
                         }
                     }
@@ -100,6 +105,7 @@ namespace EpicJewels.GemEffects
                             if (!UnallowedGreenThumbPickables.Contains(prefabname)) {
                                 if (pickable_item.CanBePicked()) {
                                     // Logger.LogDebug($"Autopicking: {prefabname}");
+                                    pickable_item.m_nview.ClaimOwnership();
                                     pickable_item.Interact(__instance, false, false);
                                 }
                             }

@@ -269,7 +269,7 @@ namespace EpicJewels
             StandingTorch.Name = $"{name} Standing Torch";
             StandingTorch.Prefab = $"CL_Standing_Torch_{name}";
             StandingTorch.Sprite = $"CL_Standing_Torch_{name}";
-            StandingTorch.Workbench = "forge";
+            StandingTorch.Workbench = "none";
             StandingTorch.Category = "Crystal Lights";
             StandingTorch.PieceCost = new List<JotunnPiece.PieceCost>() {
                 { new JotunnPiece.PieceCost() { prefab = $"Uncut_{name.ToLower()}_Stone", amount = 1, refundable = true } },
