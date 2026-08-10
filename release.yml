@@ -15,6 +15,9 @@ deploy:
 
 
 publish:
+  github:
+    enabled: true
+
   thunderstore:
     enabled: true
     author_name: MidnightsFX          # the Thunderstore TEAM, not your username
