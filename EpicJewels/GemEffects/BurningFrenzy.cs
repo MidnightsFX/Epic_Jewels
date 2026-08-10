@@ -30,7 +30,7 @@ namespace EpicJewels.GemEffects
                         // Logger.LogDebug($"VikingOnFire Damage multiplier {onfire_damage_bonus}");
                         hit.m_damage.m_blunt *= onfire_damage_bonus;
                         hit.m_damage.m_pierce *= onfire_damage_bonus;
-                        hit.m_damage.m_pierce *= onfire_damage_bonus;
+                        hit.m_damage.m_slash *= onfire_damage_bonus;
                         hit.m_damage.m_fire *= onfire_damage_bonus;
                         hit.m_damage.m_lightning *= onfire_damage_bonus;
                         hit.m_damage.m_frost *= onfire_damage_bonus;

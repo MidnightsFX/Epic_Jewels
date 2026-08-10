@@ -45,7 +45,9 @@ namespace EpicJewels.GemEffects
 
         internal static float CoinHoarderBonusCalc(Player player)
         {
-            ItemDrop.ItemData[] mcoins = player.m_inventory.GetAllItems().Where(val => val.m_dropPrefab.name == "Coins").ToArray();
+            // m_dropPrefab is null for a number of items, and this runs inside a Character.Damage
+            // prefix, so an unguarded deref throws on every hit and aborts the rest of the patch chain.
+            ItemDrop.ItemData[] mcoins = player.m_inventory.GetAllItems().Where(val => val.m_dropPrefab?.name == "Coins").ToArray();
             // Check if the user has coins, if they do not, we don't give a bonus
             if (mcoins.Length == 0) { return 1f; }
             float inv_coins = 0f;

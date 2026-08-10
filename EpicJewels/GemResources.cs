@@ -52,20 +52,32 @@ namespace EpicJewels
             API.AddGemConfig(EpicJewels.LoadEmbeddedAssetToString("EJConfig.yaml"));
         }
 
+        // Prefab name -> gem name, for the single material pass below.
+        static Dictionary<string, string> GemMaterialOverrides = new Dictionary<string, string>();
+        static bool GemMaterialPassRegistered = false;
+
         internal static void AddGemRegisterOverride(string name) {
             API.AddGems(name, name.ToLower(), GemDefinitions[name].Color);
 
             // Replace the generated crystals texture with the proper one at runtime
             // This is a workaround to Jewelcrafting choosing to not support HDR.
-            MinimapManager.OnVanillaMapAvailable += () => {
-                string prefabName = $"Raw_{name.ToLower()}_Gemstone";
-                IEnumerable<GameObject> scene_parents = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == prefabName);
-                EJLogger.LogDebug($"Found {scene_parents.Count()} objects in the scene with the name {prefabName} to apply gem material to.");
-                foreach (GameObject obj in scene_parents) {
-                    // These gemstones are made up of multiple objects kitbashed together, replace the material of all on this formation.
-                    obj.GetComponentsInChildren<MeshRenderer>().ToList().ForEach(renderer => renderer.material = GemDefinitions[name].Material);
-                }
-            };
+            // Queued into one pass: each override needs a full Resources.FindObjectsOfTypeAll scan,
+            // and subscribing one closure per gem meant six scans of every loaded object.
+            GemMaterialOverrides[$"Raw_{name.ToLower()}_Gemstone"] = name;
+            if (GemMaterialPassRegistered == false) {
+                GemMaterialPassRegistered = true;
+                MinimapManager.OnVanillaMapAvailable += ApplyGemMaterials;
+            }
+        }
+
+        private static void ApplyGemMaterials() {
+            foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>()) {
+                string gem_name;
+                if (GemMaterialOverrides.TryGetValue(obj.name, out gem_name) == false) { continue; }
+                EJLogger.LogDebug($"Applying {gem_name} gem material to {obj.name}.");
+                // These gemstones are made up of multiple objects kitbashed together, replace the material of all on this formation.
+                obj.GetComponentsInChildren<MeshRenderer>().ToList().ForEach(renderer => renderer.material = GemDefinitions[gem_name].Material);
+            }
         }
 
         internal static void AddAllCrystalLights() {

@@ -31,7 +31,7 @@ namespace EpicJewels.GemEffects
                         // Logger.LogDebug($"WetDogViking Damage multiplier {wet_damage_bonus}");
                         hit.m_damage.m_blunt *= wet_damage_bonus;
                         hit.m_damage.m_pierce *= wet_damage_bonus;
-                        hit.m_damage.m_pierce *= wet_damage_bonus;
+                        hit.m_damage.m_slash *= wet_damage_bonus;
                         hit.m_damage.m_fire *= wet_damage_bonus;
                         hit.m_damage.m_lightning *= wet_damage_bonus;
                         hit.m_damage.m_frost *= wet_damage_bonus;

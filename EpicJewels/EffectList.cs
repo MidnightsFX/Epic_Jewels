@@ -82,7 +82,7 @@ namespace EpicJewels.GemEffects
             API.AddGemEffect<CombatSpirit.Config>("Combat Spirit", "A spirit helps you in combat.", "A spirit aids you in combat for $1 seconds. Returns after a cooldown.");
             API.AddGemEffect<IntenseFire.Config>("Intense Fire", "An affinity for fire.", "You are +$1% fire resistant and have a higher chance to trigger Inferno.");
             API.AddGemEffect<SlipperyWhenWet.Config>("Slippery When Wet", "Water quickens you.", "You are $1% faster when wet.");
-            API.AddGemEffect<SlipperyWhenWet.Config>("Waterproof", "You do not get wet.", "You do not get wet.");
+            API.AddGemEffect<Waterproof.Config>("Waterproof", "You do not get wet.", "You do not get wet.");
             API.AddGemEffect<WeaponMaster.Config>("Weapon Master", "Experianced with weapons.", "Your skill with all weapons is $1% higher.");
             API.AddGemEffect<Spellsword.Config>("Spellsword", "Use eitr to increase weapon damage.", "$1% increase to damage at the cost of 5 eitr per hit.");
         }

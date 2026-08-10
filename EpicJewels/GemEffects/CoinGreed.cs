@@ -42,10 +42,12 @@ namespace EpicJewels.GemEffects
                     // Logger.LogDebug($"Coingreed: {chance_roll} < {greedChance} = {chance_roll < greedChance}");
                     if (chance_roll < greedChance)
                     {
-                        float greedAmount = UnityEngine.Random.Range(1, Math.Max(1, coin_greed));
+                        // Int overload with an exclusive upper bound, so +1 to make the configured
+                        // power actually reachable (the tooltip advertises 1-Power).
+                        int greedAmount = UnityEngine.Random.Range(1, Math.Max(1, (int)coin_greed) + 1);
                         // Logger.LogDebug($"coingreed drop {(int)greedAmount}");
                         GameObject coin = UnityEngine.Object.Instantiate(ObjectDB.instance.GetItemPrefab("Coins"), __instance.gameObject.transform.position, __instance.gameObject.transform.rotation);
-                        coin.GetComponent<ItemDrop>().m_itemData.m_stack = (int)greedAmount;
+                        coin.GetComponent<ItemDrop>().m_itemData.m_stack = greedAmount;
                     }
                 }
                 

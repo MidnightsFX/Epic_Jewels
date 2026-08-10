@@ -51,6 +51,8 @@ namespace EpicJewels.Common {
         }
 
         static List<JotunnBuildPiece> BuildPieces = new List<JotunnBuildPiece>();
+        static List<JotunnBuildPiece> ResolvablePieces = new List<JotunnBuildPiece>();
+        static bool ResolverRegistered = false;
         static bool PiecesReady = false;
 
         public static void RegisterJotunnPiece(JotunnBuildPiece jbuildpiece) {
@@ -91,26 +93,43 @@ namespace EpicJewels.Common {
 
             InitialPieceSetup(jbuildpiece);
 
-            BuildPieces.Add(jbuildpiece);
+            // Queue for resolution rather than subscribing a closure per piece. Each resolution needs
+            // a Resources.FindObjectsOfTypeAll scan, and with 6 gems x 9 piece types that was 54 full
+            // scans of every loaded object on a single event.
+            ResolvablePieces.Add(jbuildpiece);
+            if (ResolverRegistered == false) {
+                ResolverRegistered = true;
+                PrefabManager.OnPrefabsRegistered += ResolveAndApplyScenePrefabs;
+            }
+        }
 
+        // Resolves every registered piece against a single scene scan. Runs on every
+        // OnPrefabsRegistered firing (i.e. each world load), since scene prefabs are recreated per
+        // world and the cached ScenePrefab references go stale.
+        private static void ResolveAndApplyScenePrefabs() {
+            if (ResolvablePieces.Count == 0) { return; }
 
-            void ResolveAndApplyScenePrefab() {
-                IEnumerable<GameObject> scene_parents = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == jbuildpiece.Prefab);
-                if (ValConfig.EnableDebugMode.Value) { EJLogger.LogDebug($"Found {jbuildpiece.Prefab} scene parent objects: {scene_parents.Count()}"); }
-                GameObject scenePrefab = scene_parents.FirstOrDefault();
-                if (scenePrefab == null) {
+            Dictionary<string, GameObject> scene_objects = new Dictionary<string, GameObject>();
+            foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>()) {
+                if (scene_objects.ContainsKey(obj.name) == false) { scene_objects.Add(obj.name, obj); }
+            }
+            if (ValConfig.EnableDebugMode.Value) { EJLogger.LogDebug($"Resolving {ResolvablePieces.Count} pieces against {scene_objects.Count} scene objects."); }
+
+            // Gate the config change handlers only once every piece below has a resolvable prefab.
+            PiecesReady = true;
+            foreach (JotunnBuildPiece jbuildpiece in ResolvablePieces) {
+                GameObject scenePrefab;
+                if (scene_objects.TryGetValue(jbuildpiece.Prefab, out scenePrefab) == false) {
                     EJLogger.LogWarning($"Could not find scene prefab '{jbuildpiece.Prefab}' after prefab registration; skipping in-place setup for {jbuildpiece.Name}.");
-                    return;
+                    continue;
                 }
                 jbuildpiece.Objs.ScenePrefab = scenePrefab;
-                PiecesReady = true;
                 // Bring the current config (default or server-synced) into effect a single time now that
                 // every mod prefab is resolvable. This also covers values that arrived early via config sync.
                 ApplyWorkbench(jbuildpiece);
                 ApplyCategory(jbuildpiece);
                 ApplyRecipe(jbuildpiece);
             }
-            PrefabManager.OnPrefabsRegistered += ResolveAndApplyScenePrefab;
         }
 
         private static void InitialPieceSetup(JotunnBuildPiece jbuildpiece) {
@@ -232,6 +251,9 @@ namespace EpicJewels.Common {
                 }
                 if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"Fixed mock requirements {newRequirements.Count}."); }
                 jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_resources = newRequirements.ToArray();
+                // Restore buildability - the disabled branch below sets this false, and without this
+                // the Enabled config toggle is one-way until a restart.
+                jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_enabled = true;
                 if (ValConfig.EnableDebugMode.Value == true) { EJLogger.LogDebug($"New requirements set {jbuildpiece.Objs.ScenePrefab.GetComponent<Piece>().m_resources}."); }
             } else {
                 // Set this piece not craftable
@@ -243,9 +265,10 @@ namespace EpicJewels.Common {
             String[] RawRecipeEntries = rawrecipe.Split('|');
             // EJLogger.LogInfo($"{RawRecipeEntries.Length} {string.Join(", ", RawRecipeEntries)}");
             List<PieceCost> updated_pieceRecipe = new List<PieceCost>();
-            // we only clear out the default recipe if there is recipe data provided, otherwise we will continue to use the default recipe
-            // TODO: Add a sanity check to ensure that recipe formatting is correct
-            if (RawRecipeEntries.Length >= 1) {
+            // String.Split always yields at least one element, so there is no "empty recipe" case to
+            // branch on here - a malformed entry is rejected per-entry below and the caller falls
+            // back to the default recipe.
+            {
                 foreach (String recipe_entry in RawRecipeEntries) {
                     //EJLogger.LogInfo($"{recipe_entry}");
                     String[] recipe_segments = recipe_entry.Split(',');
@@ -278,10 +301,16 @@ namespace EpicJewels.Common {
                         return false;
                     }
 
+                    int amount_parse;
+                    if (Int32.TryParse(recipe_segments[1], out amount_parse) == false) {
+                        EJLogger.LogWarning($"{recipe_entry} is invalid, the CRAFT_COST could not be parsed to a whole number. Proper format is: PREFABNAME,CRAFT_COST,REFUND_BOOL eg: Wood,8,false");
+                        return false;
+                    }
+
                     if (ValConfig.EnableDebugMode.Value == true) {
                         EJLogger.LogDebug($"prefab: {recipe_segments[0]} c:{recipe_segments[1]} u:{recipe_segments[2]}");
                     }
-                    updated_pieceRecipe.Add(new PieceCost() { prefab = recipe_segments[0], amount = Int32.Parse(recipe_segments[1]), refundable = refund_flag_parse });
+                    updated_pieceRecipe.Add(new PieceCost() { prefab = recipe_segments[0], amount = amount_parse, refundable = refund_flag_parse });
                 }
                 //EJLogger.LogInfo("Done parsing recipe");
                 jbuildpiece.Cfgs.UpdatedCost.Clear();
@@ -295,12 +324,7 @@ namespace EpicJewels.Common {
                     EJLogger.LogDebug($"Updated recipe:{recipe_string}");
                 }
                 return true;
-            } else {
-                EJLogger.LogWarning($"Invalid recipe: {rawrecipe}. defaults will be used. Check your prefab names.");
-                jbuildpiece.Cfgs.UpdatedCost = jbuildpiece.PieceCost;
-
             }
-            return false;
         }
     }
 }

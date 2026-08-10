@@ -20,7 +20,7 @@ namespace EpicJewels.GemEffects
         {
             private static void Postfix(Humanoid __instance, ref bool __result)
             {
-                if (__instance is Player player && player.GetEffectPower<Config>("Eitr Conversion").Power > 0)
+                if (__instance is Player player && player.GetEffectPower<Config>("Eitr Conversion").Power > 0 && __result == true)
                 {
                     float roll = Random.value;
                     float chance_max = (player.GetEffectPower<Config>("Eitr Conversion").Chance / 100);

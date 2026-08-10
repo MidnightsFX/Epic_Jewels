@@ -82,6 +82,10 @@ namespace EpicJewels
                 text = resourceAssembly.GetManifestResourceNames().Single((string str) => str.EndsWith(bundleName));
             }
             catch (Exception) {}
+            if (text == null) {
+                EJLogger.LogError($"Could not find an embedded asset bundle matching '{bundleName}'.");
+                return null;
+            }
             using (Stream stream = resourceAssembly.GetManifestResourceStream(text))
             {
                 result = AssetBundle.LoadFromStream(stream);

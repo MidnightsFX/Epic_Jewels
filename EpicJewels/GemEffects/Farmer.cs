@@ -43,6 +43,15 @@ namespace EpicJewels.GemEffects
             "BlackCore"
         };
 
+        // Both the manual-pick and auto-pickup paths have to derive the blocklist key the same way,
+        // otherwise the two filter different sets. Keyed off the dropped item prefab, not the
+        // Pickable GameObject, since that is what the blocklist entries name.
+        private static bool IsBlockedPickable(Pickable pickable) {
+            if (pickable == null || pickable.m_itemPrefab == null) { return true; }
+            string prefabname = pickable.m_itemPrefab.name.Replace("(Clone)", "").Replace("Pickable_", "");
+            return UnallowedGreenThumbPickables.Contains(prefabname);
+        }
+
         [HarmonyPatch(typeof(Pickable), nameof(Pickable.Interact))]
         public static class IncreaseCarryWeight {
             // Capture whether the pickable was already picked BEFORE Interact runs.
@@ -65,9 +74,8 @@ namespace EpicJewels.GemEffects
                 }
                 // Being picked by the current player
                 if (character != null && character is Player player && player.GetEffectPower<Config>("Farmer").Power > 0) {
-                    string prefabname = __instance.m_itemPrefab.name.Replace("(Clone)", "").Replace("Pickable_", "");
-                    if (UnallowedGreenThumbPickables.Contains(prefabname)) {
-                        // EpicJewels.EJLog.LogDebug($"Pickable type ({prefabname}) is not allowed for farmer perk.");
+                    if (IsBlockedPickable(__instance)) {
+                        // EpicJewels.EJLog.LogDebug($"Pickable type is not allowed for farmer perk.");
                         return;
                     }
                     float roll = UnityEngine.Random.value;
@@ -88,26 +96,23 @@ namespace EpicJewels.GemEffects
         {
             private static readonly int pickableMask = LayerMask.GetMask("piece_nonsolid", "item", "Default_small");
 
-            private static float fdt = Time.fixedDeltaTime;
             private static float last_update = 0f;
-            private static float current_tick_time = 0f;
             public static void Postfix(Player __instance)
             {
                 if (__instance != null && __instance.GetEffectPower<Config>("Farmer").Pickup > 0) {
-                    // We only want to do this silly expensive update every half a second or so
-                    // Logger.LogDebug($"Farmer autopick: {current_tick_time} > {last_update + 1f}");
-                    current_tick_time += fdt;
-                    if (current_tick_time > (last_update + 0.5f)) { last_update = current_tick_time; } else { return; }
+                    // We only want to do this silly expensive update every half a second or so.
+                    // Driven off Time.time rather than an accumulator: this runs in Update, so a
+                    // fixedDeltaTime accumulator throttled by frame count instead of wall time and
+                    // lost precision over a long session.
+                    if (Time.time < (last_update + 0.5f)) { return; }
+                    last_update = Time.time;
                     foreach (Collider obj_collider in Physics.OverlapSphere(__instance.transform.position, (2f + __instance.GetEffectPower<Config>("Farmer").Pickup), pickableMask)) {
                         Pickable pickable_item = obj_collider.GetComponent<Pickable>() ?? obj_collider.GetComponentInParent<Pickable>();
-                        if (pickable_item != null) {
-                            string prefabname = pickable_item.name.Replace("(Clone)", "").Replace("Pickable_", "");
-                            if (!UnallowedGreenThumbPickables.Contains(prefabname)) {
-                                if (pickable_item.CanBePicked()) {
-                                    // Logger.LogDebug($"Autopicking: {prefabname}");
-                                    pickable_item.m_nview.ClaimOwnership();
-                                    pickable_item.Interact(__instance, false, false);
-                                }
+                        if (pickable_item != null && IsBlockedPickable(pickable_item) == false) {
+                            if (pickable_item.m_nview != null && pickable_item.CanBePicked()) {
+                                // Logger.LogDebug($"Autopicking: {pickable_item.m_itemPrefab.name}");
+                                pickable_item.m_nview.ClaimOwnership();
+                                pickable_item.Interact(__instance, false, false);
                             }
                         }
                     }

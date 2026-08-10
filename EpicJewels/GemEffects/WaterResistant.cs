@@ -15,7 +15,7 @@ namespace EpicJewels.GemEffects
         }
 
         private static float delayWetTill = 0;
-        private static int wet_hash =  "Wet".GetHashCode();
+        private static int wet_hash =  "Wet".GetStableHashCode();
 
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.AddStatusEffect), typeof(int), typeof(bool), typeof(int), typeof(float))]
         public static class Waterproof_SEMan_AddStatusEffect_Patch

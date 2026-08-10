@@ -54,18 +54,18 @@ namespace EpicJewels.EffectHelpers
                             break;
                         case "$inventory_fire":
                             if (coinhoarder_power > 0 || spellblade_power > 0) {
-                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_blunt, min, max, 0f, coinhoarder_power, spellblade_power);
+                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_fire, min, max, 0f, coinhoarder_power, spellblade_power);
                             }
                             break;
                         case "$inventory_poison":
                             if (coinhoarder_power > 0 || spellblade_power > 0) {
-                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_blunt, min, max, 0f, coinhoarder_power, spellblade_power);
+                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_poison, min, max, 0f, coinhoarder_power, spellblade_power);
                             }
                             break;
                         case "$inventory_frost":
                             if (coinhoarder_power > 0 || spellblade_power > 0)
                             {
-                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_blunt, min, max, 0f, coinhoarder_power, spellblade_power);
+                                result_lines[i] = AddModifierExplainer(entry_lines[i], total_dmg, item.m_shared.m_damages.m_frost, min, max, 0f, coinhoarder_power, spellblade_power);
                             }
                             break;
                         case "$inventory_blunt":
@@ -170,14 +170,17 @@ namespace EpicJewels.EffectHelpers
             float bonus_dmg = total_dmg * (bonus_power / 100);
             float dmg_mult = coinhoarder_mult;
             string[] line_arr = current_line.Split(' ');
+            // We rewrite line_arr[1] and line_arr[2] below; a damage line that does not split into at
+            // least three tokens would throw out of a GetTooltip postfix and break the whole tooltip.
+            if (line_arr.Length < 3) {
+                return current_line;
+            }
             //EJLogger.LogInfo($"Modifying ({current_line}) {line_arr[1]}");
             // Change the damage text color to the specified one
             Match match = Regex.Match(line_arr[1], @"(?<=>)(\d+)(?=<)");
             if (match.Success == false) {
                 return current_line;
             }
-            EJLogger.LogInfo($"Match {match.Value}");
-
             int dmg;
             bool parsed = int.TryParse(match.Value, out dmg);
             if (parsed == false) {
@@ -189,7 +192,7 @@ namespace EpicJewels.EffectHelpers
             if (spellsword_mult > 0) {
                 float eitr_cost = Player.m_localPlayer.GetEffectPower<GemEffects.EitrFused.Config>("Eitr Fused").Cost + 5;
                 if (Player.m_localPlayer.HaveEitr(eitr_cost)) {
-                    dmg_mult += (1f + (spellsword_mult / 100f));
+                    dmg_mult *= (1f + (spellsword_mult / 100f));
                 }
             }
 

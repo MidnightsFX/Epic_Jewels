@@ -18,16 +18,18 @@ namespace EpicJewels.GemEffects
         [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.BlockAttack))]
         private static class FreezingBlock_Patch
         {
-            static HitData originalHit = null;
-            private static void Prefix(HitData hit)
+            // Carried through __state rather than a static: the Postfix calls attacker.Damage(),
+            // which can re-enter BlockAttack if the attacker is itself blocking and would clobber a
+            // shared field before the outer Postfix reads it.
+            private static void Prefix(HitData hit, out float __state)
             {
-                originalHit = new HitData(damage: hit.GetTotalDamage());
+                __state = hit.GetTotalDamage();
             }
 
             private static int froststatus = "Frost".GetStableHashCode();
-            private static void Postfix(Humanoid __instance, HitData hit, Character attacker, ref bool __result)
+            private static void Postfix(Humanoid __instance, HitData hit, Character attacker, ref bool __result, float __state)
             {
-                if (__instance is Player player && player.GetEffectPower<Config>("Freezing Guard").Chance > 0 && __result == true && attacker.IsDead() == false)
+                if (__instance is Player player && player.GetEffectPower<Config>("Freezing Guard").Chance > 0 && __result == true && attacker != null && attacker.IsDead() == false)
                 {
                     float roll = UnityEngine.Random.value;
                     float chance_max = (player.GetEffectPower<Config>("Freezing Guard").Chance / 100);
@@ -35,7 +37,7 @@ namespace EpicJewels.GemEffects
                     if (roll < chance_max)
                     {
                         HitData frost_rebuke_hit = new HitData();
-                        frost_rebuke_hit.m_damage.m_frost = (player.GetEffectPower<Config>("Freezing Guard").Power / 100) * originalHit.m_damage.GetTotalDamage();
+                        frost_rebuke_hit.m_damage.m_frost = (player.GetEffectPower<Config>("Freezing Guard").Power / 100) * __state;
                         // Logger.LogDebug($"Hit dmg {originalHit} FreezingGuard returning damage {frost_rebuke_hit.m_damage.m_frost}");
                         frost_rebuke_hit.m_attacker = player.GetZDOID();
                         frost_rebuke_hit.m_point = hit.m_point + new UnityEngine.Vector3(0, 0.5f);

@@ -25,7 +25,9 @@ namespace EpicJewels.GemEffects
                     {
                         if (player.GetEffectPower<Config>("Fire Resistance").Power > 0 || player.GetEffectPower<Config>("Intense Fire").Power > 0)
                         {
-                            float dmg_reduce = ((100f - (player.GetEffectPower<Config>("Fire Resistance").Power + player.GetEffectPower<Config>("Intense Fire").Power)) / 100f);
+                            // Fire is the only resistance that sums two sources, so the total can pass
+                            // 100 and invert the multiplier into negative (healing) fire damage.
+                            float dmg_reduce = UnityEngine.Mathf.Max(0f, (100f - (player.GetEffectPower<Config>("Fire Resistance").Power + player.GetEffectPower<Config>("Intense Fire").Power)) / 100f);
                             // Logger.LogDebug($"Fire Resistance is reducing fire damage {(1 - dmg_reduce)}");
                             hit.m_damage.m_fire *= dmg_reduce;
                         }

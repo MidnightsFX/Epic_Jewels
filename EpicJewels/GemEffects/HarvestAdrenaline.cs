@@ -22,7 +22,14 @@ namespace EpicJewels.GemEffects {
                     float power = attacker.GetEffectPower<Config>("Harvest Adrenaline").Power;
                     float amount = totaldmg * (power / 100f);
                     EJLogger.LogDebug($"Harvest Adrenaline is restoring {amount} adrenaline based on total damage of {totaldmg} and power of {power}");
-                    attacker.AddAdrenaline(amount);
+                    // These are RPC handlers running on the harvestable's ZDO owner, which is often
+                    // not the attacker's client. Mirror vanilla (Character.OnStagger) and route the
+                    // gain through an RPC when we do not own the attacker.
+                    if (attacker.IsOwner()) {
+                        attacker.AddAdrenaline(amount);
+                    } else {
+                        attacker.m_nview.InvokeRPC("RPC_AddAdrenaline", amount);
+                    }
                 }
             }
         }

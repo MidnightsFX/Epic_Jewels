@@ -85,6 +85,10 @@ namespace EpicJewels.GemEffects
             if (bat == null)
             {
                 ZNetScene.instance.m_namedPrefabs.TryGetValue("Bat".GetStableHashCode() ,out bat);
+                if (bat == null) {
+                    Logger.LogWarning("Cover of Darkness could not resolve the 'Bat' prefab, skipping spawn.");
+                    return;
+                }
             }
 
             Quaternion rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);

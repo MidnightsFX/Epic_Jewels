@@ -10,16 +10,19 @@ namespace EpicJewels.EffectHelpers
     {
         private static HitData ModifyHarvestDamage(HitData hit)
         {
-            if (hit.GetAttacker() is Player)
+            // These are all RPC handlers, so they only run on the client that owns the harvestable's
+            // ZDO - which is not necessarily the attacker's client. Spending eitr on a Player we do
+            // not own would mutate a replicated character from the wrong machine.
+            if (hit.GetAttacker() is Player && hit.GetAttacker().IsOwner())
             {
                 Player player = hit.GetAttacker() as Player;
                 float original_total_dmg = hit.m_damage.GetTotalDamage();
                 float added_pickaxe_dmg = 0;
-                if (player.GetEffectPower<GemEffects.AddPickaxeDamage.Config>("Add Pickaxe Damage").Chance >= UnityEngine.Random.value) {
+                if (player.GetEffectPower<GemEffects.AddPickaxeDamage.Config>("Add Pickaxe Damage").Chance / 100f >= UnityEngine.Random.value) {
                     added_pickaxe_dmg = original_total_dmg * (player.GetEffectPower<GemEffects.AddPickaxeDamage.Config>("Add Pickaxe Damage").Power / 100);
                 }
                 float added_chop_dmg = 0;
-                if (player.GetEffectPower<GemEffects.AddChopDamage.Config>("Add Chop Damage").Chance >= UnityEngine.Random.value) {
+                if (player.GetEffectPower<GemEffects.AddChopDamage.Config>("Add Chop Damage").Chance / 100f >= UnityEngine.Random.value) {
                     added_chop_dmg = original_total_dmg * (player.GetEffectPower<GemEffects.AddChopDamage.Config>("Add Chop Damage").Power / 100);
                 }
 
