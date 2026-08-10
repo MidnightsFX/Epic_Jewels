@@ -1,3 +1,10 @@
+ **1.1.0**
+ ---
+ ```
+- Various bugfixes
+- Convert publishing pipeline
+ ```
+
  **1.0.7**
  ---
  ```
