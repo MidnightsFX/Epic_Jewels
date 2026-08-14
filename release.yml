@@ -7,15 +7,14 @@
 extends:  jotunn
 assembly: EpicJewels
 
-# Copy the build into this machine's mod manager profiles after every
-# build. Destinations live in /mnt/c/Users/carls/Documents/projects/Valheim_Stuff/Valheim-tools/.config/config.yml,
-# because they differ per machine.
 deploy:
   enabled: true
 
-
 publish:
   github:
+    enabled: true
+
+  discord:
     enabled: true
 
   thunderstore:

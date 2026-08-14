@@ -301,35 +301,38 @@ gems:
     opal: 0.1
     jade: 0.0
     amber: 0.0
-Have opal = amethyst > 3 of each:
+# Synergy names double as localization keys: Jewelcrafting looks up
+# jc_synergy_condition_<name with spaces replaced by underscores>. Valheim ends a $token at any of
+# " (){}[]+-!?/\&%,.:-=<>" so these names must stay plain words and digits, or the lookup breaks.
+equal opal and amethyst above three:
   conditions:
     - opal > 3
     - amethyst > 3
     - opal = amethyst
   effect:
     Combat Spirit: 40
-Have at least 7 garnets:
+at least seven garnets:
   conditions:
     - garnet > 6
   effect:
     Intense Fire: 25
-Have 6 amber and 6 jade:
+exactly six amber and six jade:
   conditions:
     - amber = 6
     - jade = 6
   effect:
     Weapon Master: 15
-Have at least 6 aquamarine:
+at least six aquamarine:
   conditions:
     - aquamarine > 5
   effect:
     Slippery When Wet: 35
-Have at least 13 aquamarine:
+at least thirteen aquamarine:
   conditions:
     - aquamarine > 12
   effect:
     Waterproof: 1
-Have at least 9 amethyst, 6 opal, and 3 amber:
+nine amethyst six opal and three amber:
   conditions:
     - amethyst > 8
     - opal > 5

@@ -1,3 +1,10 @@
+ **1.1.1**
+ ---
+ ```
+- Improved overall translations
+- Added dedicated translations to all of the synergies
+ ```
+
  **1.1.0**
  ---
  ```
